@@ -13,6 +13,6 @@ public class CatImage {
     @NonNull
     @Override
     public String toString() {
-        return String.format("id: %s, url: %s, categories: %s, breeds: %s", id, url, (categories != null) ? categories.toString() : null, (breeds != null) ? breeds.toString() : null);
+        return String.format("id: %s\nurl: %s\ncategories: %s\nbreeds: %s", id, url, (categories != null) ? categories.toString() : null, (breeds != null) ? breeds.toString() : null);
     }
 }
