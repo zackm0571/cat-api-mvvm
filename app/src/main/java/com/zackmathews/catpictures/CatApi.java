@@ -14,13 +14,13 @@ public interface CatApi {
     Call<List<CatCategory>> getCategories();
 
     @GET("/v1/images/search")
-    Call<List<CatImage>> searchByBreed(@Query("breed_ids") String breedId);
+    Call<List<CatImage>> searchByBreed(@Query("limit") int n, @Query(value = "breed_ids", encoded = true) String breedIds);
 
     @GET("/v1/images/search")
-    Call<List<CatImage>> searchByCategory(@Query("category_ids") String categoryId);
+    Call<List<CatImage>> searchByCategory(@Query("limit") int n, @Query(value = "category_ids", encoded = true) String categoryIds);
 
     @GET("/v1/images/search")
-    Call<List<CatImage>> search(@Query("category_ids") String categoryIds, @Query("breed_ids") String breedIds);
+    Call<List<CatImage>> search(@Query("limit") int n, @Query(value = "category_ids", encoded = true) String categoryIds, @Query(value = "breed_ids", encoded = true) String breedIds);
 
     @GET("/v1/images/search")
     Call<List<CatImage>> getRandomImage(@Query("limit") int n);

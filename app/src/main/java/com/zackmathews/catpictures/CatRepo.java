@@ -1,6 +1,7 @@
 package com.zackmathews.catpictures;
 
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
@@ -29,93 +30,111 @@ public class CatRepo {
 
     public MutableLiveData<List<CatImage>> getCatImages(int n) {
         List<CatImage> results = new ArrayList<>();
-        Response<List<CatImage>> response = null;
         Call<List<CatImage>> call = catApi.getRandomImage(n);
-        Log.d(getClass().getSimpleName(), String.format("getCatImaqes(%d), request: %s", n, call.request().toString()));
         call.enqueue(new Callback<List<CatImage>>() {
             @Override
             public void onResponse(Call<List<CatImage>> call, Response<List<CatImage>> response) {
                 if (response.body() != null) {
                     results.addAll(response.body());
+                    Log.d(getClass().getSimpleName(), String.format("getCatImaqes(%d), request: %s", n, call.request().toString()));
+                    Log.d(getClass().getSimpleName(), String.format("Results: %s", results.toString()));
                 }
-                catImages.setValue(results);
+                catImages.postValue(results);
             }
 
             @Override
             public void onFailure(Call<List<CatImage>> call, Throwable t) {
+                t.printStackTrace();
                 Log.d(getClass().getSimpleName(), String.format("getCatImages(%d) failed. Info: %s", n, call.request().toString()));
             }
         });
         return catImages;
     }
 
+    public MutableLiveData<List<CatImage>> getCatImagesFromSearchFilters(int n, List<CatBreed> catBreeds, List<CatCategory> catCategories) {
+        List<CatImage> results = new ArrayList<>();
+        StringBuilder breedIds = new StringBuilder("");
+        StringBuilder categoryIds = new StringBuilder("");
+        for (int i = 0; i < catBreeds.size(); i++) {
+            breedIds.append(catBreeds.get(i).getId());
+            if(i != catBreeds.size() - 1) {
+                breedIds.append(",");
+            }
+        }
+        for (int j = 0; j < catCategories.size(); j++) {
+            categoryIds.append(catCategories.get(j).getId());
+            if(j != catCategories.size() - 1) {
+                categoryIds.append(",");
+            }
+        }
+        Call<List<CatImage>> call = (catBreeds.size() > 0 && catCategories.size() > 0) ?
+                catApi.search(n, categoryIds.toString(), breedIds.toString()) :
+                (catBreeds.size() > 0) ? catApi.searchByBreed(n, breedIds.toString()) :
+                        catApi.searchByCategory(n, categoryIds.toString());
+        Log.d(getClass().getSimpleName(), String.format("getCatImaqesFromSearchFilters(%d), request: %s", n, call.request().toString()));
+        call.enqueue(new Callback<List<CatImage>>() {
+            @Override
+            public void onResponse(Call<List<CatImage>> call, Response<List<CatImage>> response) {
+                if (response.body() != null) {
+                    results.addAll(response.body());
+                    Log.d(getClass().getSimpleName(), String.format("Results: %s", results.toString()));
+                }
+                catImages.postValue(results);
+            }
 
-    public MutableLiveData<List<CatImage>> getCatImagesFromSearchFilters(List<CatBreed> catBreeds, List<CatCategory> catCategories) {
-        AsyncTask.execute(() -> {
-            List<CatImage> results = new ArrayList<>();
-            Response<List<CatImage>> response = null;
-            StringBuilder breedIds = new StringBuilder();
-            StringBuilder categoryIds = new StringBuilder();
-            for (int i = 0; i < catBreeds.size(); i++) {
-                breedIds.append(catBreeds.get(i).getId());
-                if (i < catBreeds.size() - 1) {
-                    breedIds.append(",");
-                }
+            @Override
+            public void onFailure(Call<List<CatImage>> call, Throwable t) {
+                t.printStackTrace();
+                Log.d(getClass().getSimpleName(), String.format("getCatImagesFromSearchFilters(%d) failed. Info: %s", n, call.request().toString()));
             }
-            for (int j = 0; j < catCategories.size(); j++) {
-                categoryIds.append(catCategories.get(j).getId());
-                if (j < catCategories.size() - 1) {
-                    categoryIds.append(",");
-                }
-            }
-            try {
-                response = catApi.search(categoryIds.toString(), breedIds.toString()).execute();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (response.body() != null) {
-                results.addAll(response.body());
-            }
-            catImages.postValue(results);
         });
         return catImages;
     }
 
     public MutableLiveData<List<CatBreed>> getBreeds() {
         List<CatBreed> results = new ArrayList<>();
-        catApi.getBreeds().enqueue(new Callback<List<CatBreed>>() {
+        Call<List<CatBreed>> call = catApi.getBreeds();
+        Log.d(getClass().getSimpleName(), String.format("getBreeds(), request: %s", call.request().toString()));
+        call.enqueue(new Callback<List<CatBreed>>() {
             @Override
             public void onResponse(Call<List<CatBreed>> call, Response<List<CatBreed>> response) {
                 if (response.body() != null) {
                     results.addAll(response.body());
+                    Log.d(getClass().getSimpleName(), String.format("Results: %s", results.toString()));
                 }
                 breeds.postValue(results);
             }
 
             @Override
             public void onFailure(Call<List<CatBreed>> call, Throwable t) {
-                Log.d(getClass().getSimpleName(), String.format("getBreeds() failed: %s", call.request().toString()));
+                t.printStackTrace();
+                Log.d(getClass().getSimpleName(), String.format("getBreeds() failed, request: %s", call.request().toString()));
             }
         });
         return breeds;
     }
 
     public MutableLiveData<List<CatCategory>> getCategories() {
-            List<CatCategory> results = new ArrayList<>();
-            catApi.getCategories().enqueue(new Callback<List<CatCategory>>() {
-                @Override
-                public void onResponse(Call<List<CatCategory>> call, Response<List<CatCategory>> response) {
-                    if (response.body() != null) {
-                        results.addAll(response.body());
-                    }
-                    categories.postValue(results);
-                }
+        List<CatCategory> results = new ArrayList<>();
+        Call<List<CatCategory>> call = catApi.getCategories();
+        Log.d(getClass().getSimpleName(), String.format("getCategories(), request: %s", call.request().toString()));
 
-                @Override
-                public void onFailure(Call<List<CatCategory>> call, Throwable t) {
-                    Log.d(getClass().getSimpleName(), String.format("getCategories() failed: %s", call.request().toString()));
+        call.enqueue(new Callback<List<CatCategory>>() {
+            @Override
+            public void onResponse(Call<List<CatCategory>> call, Response<List<CatCategory>> response) {
+                if (response.body() != null) {
+                    results.addAll(response.body());
+                    Log.d(getClass().getSimpleName(), String.format("Results: %s", results.toString()));
                 }
-            });
+                categories.postValue(results);
+            }
+
+            @Override
+            public void onFailure(Call<List<CatCategory>> call, Throwable t) {
+                t.printStackTrace();
+                Log.d(getClass().getSimpleName(), String.format("getCategories() failed: %s", call.request().toString()));
+            }
+        });
         return categories;
     }
 }

@@ -21,7 +21,7 @@ public class MainViewModel extends ViewModel {
 
 
     public MutableLiveData<List<CatImage>> getImagesFromSearchFilter(List<CatBreed> catBreeds, List<CatCategory>catCategories){
-        return catRepo.getCatImagesFromSearchFilters(catBreeds, catCategories);
+        return catRepo.getCatImagesFromSearchFilters(Constants.DEFAULT_IMAGES_TO_LOAD, catBreeds, catCategories);
     }
     public MutableLiveData<List<CatImage>> getCatImages() {
         return catImages;
