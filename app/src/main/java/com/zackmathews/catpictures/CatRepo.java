@@ -1,10 +1,7 @@
 package com.zackmathews.catpictures;
 
-import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +13,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Repo for thecatapi. Set API key in ${project root}/catapi.properties.
+ */
 public class CatRepo {
     private MutableLiveData<List<CatImage>> catImages = new MutableLiveData<>();
     private MutableLiveData<List<CatCategory>> categories = new MutableLiveData<>();
@@ -28,6 +28,12 @@ public class CatRepo {
             .build();
     private CatApi catApi = retrofit.create(CatApi.class);
 
+    /**
+     * Retrieves n results of random {@link CatImage}s.
+     *
+     * @param n number of results
+     * @return List of {@link CatImage}s.
+     */
     public MutableLiveData<List<CatImage>> getCatImages(int n) {
         List<CatImage> results = new ArrayList<>();
         Call<List<CatImage>> call = catApi.getRandomImage(n);
@@ -51,19 +57,30 @@ public class CatRepo {
         return catImages;
     }
 
+    /**
+     * Retrieves n {@link CatImage}s filtered by Breed or Category.
+     * Currently thecatapi returns an empty array when trying to search
+     * with more than one category OR breed. Note: given more time I would split up
+     * this api call.
+     *
+     * @param n             number of desired results
+     * @param catBreeds     list of {@link CatBreed}
+     * @param catCategories list of {@link CatCategory}
+     * @return list of n {@link CatImage}s
+     */
     public MutableLiveData<List<CatImage>> getCatImagesFromSearchFilters(int n, List<CatBreed> catBreeds, List<CatCategory> catCategories) {
         List<CatImage> results = new ArrayList<>();
         StringBuilder breedIds = new StringBuilder("");
         StringBuilder categoryIds = new StringBuilder("");
         for (int i = 0; i < catBreeds.size(); i++) {
             breedIds.append(catBreeds.get(i).getId());
-            if(i != catBreeds.size() - 1) {
+            if (i != catBreeds.size() - 1) {
                 breedIds.append(",");
             }
         }
         for (int j = 0; j < catCategories.size(); j++) {
             categoryIds.append(catCategories.get(j).getId());
-            if(j != catCategories.size() - 1) {
+            if (j != catCategories.size() - 1) {
                 categoryIds.append(",");
             }
         }
@@ -91,6 +108,11 @@ public class CatRepo {
         return catImages;
     }
 
+    /**
+     * Retrieves all breeds supported by thecatapi platform.
+     *
+     * @return list of {@link CatBreed}s
+     */
     public MutableLiveData<List<CatBreed>> getBreeds() {
         List<CatBreed> results = new ArrayList<>();
         Call<List<CatBreed>> call = catApi.getBreeds();
@@ -114,6 +136,11 @@ public class CatRepo {
         return breeds;
     }
 
+    /**
+     * Retrieves all categories supported by thecatapi platform.
+     *
+     * @return list of {@link CatCategory}s
+     */
     public MutableLiveData<List<CatCategory>> getCategories() {
         List<CatCategory> results = new ArrayList<>();
         Call<List<CatCategory>> call = catApi.getCategories();

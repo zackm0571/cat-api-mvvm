@@ -1,9 +1,17 @@
 package com.zackmathews.catpictures;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 
+/**
+ * Model for thecatapi category object.
+ * Use with {@link CatRepo#getCatImagesFromSearchFilters(int, List, List)}
+ * to filter results by category.
+ */
 public class CatCategory {
     int id;
+
     public int getId() {
         return id;
     }
@@ -14,6 +22,7 @@ public class CatCategory {
 
 
     String name;
+
     public String getName() {
         return name;
     }

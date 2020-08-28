@@ -14,9 +14,16 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class HorizontalListAdapter extends RecyclerView.Adapter<HorizontalListAdapter.ItemCard> {
+/**
+ * RecyclerView adapter to display {@link CatImage} objects in a timeline.
+ * Note: Given more time I would add infinite scrolling + suggested search terms +
+ * Timeline repo to include many different kinds of cards
+ * (Ads, suggested search terms, images, etc)
+ */
+public class CatImageAdapter extends RecyclerView.Adapter<CatImageAdapter.ItemCard> {
 
     private List<CatImage> data = new ArrayList<>();
+
     public void setData(List<CatImage> data) {
         this.data = data;
         notifyDataSetChanged();
@@ -42,9 +49,10 @@ public class HorizontalListAdapter extends RecyclerView.Adapter<HorizontalListAd
         holder.tv.setText(catImage.toString());
     }
 
-    static class ItemCard extends RecyclerView.ViewHolder{
+    static class ItemCard extends RecyclerView.ViewHolder {
         ImageView iv;
         TextView tv;
+
         public ItemCard(@NonNull View itemView) {
             super(itemView);
             this.iv = itemView.findViewById(R.id.catImageView);

@@ -20,9 +20,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * Unit tests for thecatapi. Includes partial coverage of {@link CatApi} and {@link CatRepo}.
+ * Ran out of time before I could get full test coverage.
+ * Given more time I would get full test coverage as well as add parameterized tests
+ * for the different breeds / categories.
  */
 public class CatApiUnitTest {
     @Test
@@ -120,7 +121,7 @@ public class CatApiUnitTest {
             }
         }).build()).build();
         CatApi catApi = retrofit.create(CatApi.class);
-        catApi.searchByCategory("1").enqueue(new Callback<List<CatImage>>() {
+        catApi.searchByCategory(Constants.DEFAULT_IMAGES_TO_LOAD, "1").enqueue(new Callback<List<CatImage>>() {
             @Override
             public void onResponse(Call<List<CatImage>> call, Response<List<CatImage>> response) {
                 if (response.body() == null) {
@@ -161,7 +162,7 @@ public class CatApiUnitTest {
             }
         }).build()).build();
         CatApi catApi = retrofit.create(CatApi.class);
-        catApi.searchByBreed("sibe").enqueue(new Callback<List<CatImage>>() {
+        catApi.searchByBreed(Constants.DEFAULT_IMAGES_TO_LOAD, "sibe").enqueue(new Callback<List<CatImage>>() {
             @Override
             public void onResponse(Call<List<CatImage>> call, Response<List<CatImage>> response) {
                 if (response.body() == null) {

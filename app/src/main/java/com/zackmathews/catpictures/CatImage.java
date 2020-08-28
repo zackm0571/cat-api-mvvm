@@ -4,6 +4,9 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
+/**
+ * Model for thecatapi image result object. {@link CatRepo} includes api access.
+ */
 public class CatImage {
     String id;
     String url;

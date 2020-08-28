@@ -2,11 +2,8 @@ package com.zackmathews.catpictures;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
@@ -21,16 +18,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * MainActivity to display cat images from thecatapi.
+ * If given more time I would have used a {@link androidx.fragment.app.FragmentActivity}.
+ */
 public class MainActivity extends AppCompatActivity {
-    ProgressBar progressBar;
-    RecyclerView recyclerView;
-    HorizontalListAdapter adapter;
-    MainViewModel viewModel;
-    FloatingActionButton fab;
+    private MainViewModel viewModel;
 
-
-    AlertDialog searchDialog;
-    View searchView;
+    private ProgressBar progressBar;
+    private RecyclerView recyclerView;
+    private CatImageAdapter adapter;
+    private FloatingActionButton fab;
+    private AlertDialog searchDialog;
+    private View searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +83,15 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this,
                 2);
         recyclerView.setLayoutManager(gridLayoutManager);
-        adapter = new HorizontalListAdapter();
+        adapter = new CatImageAdapter();
         recyclerView.setAdapter(adapter);
     }
 
+    /**
+     * Inflates / returns the {@link AlertDialog} containing the search view.
+     *
+     * @return {@link AlertDialog}
+     */
     private AlertDialog getSearchDialog() {
         if (searchDialog == null) {
             searchDialog = new AlertDialog.Builder(this).setView(getSearchView()).create();
@@ -94,23 +99,14 @@ public class MainActivity extends AppCompatActivity {
         return searchDialog;
     }
 
-    private void setSearchViewChips(View v, List<CatBreed> breeds, List<CatCategory> categories) {
-        for (CatBreed breed : breeds) {
-            Chip chip = new Chip(this);
-            chip.setText(breed.getName());
-            chip.setTag(breed);
-            chip.setCheckable(true);
-            ((ChipGroup) v.findViewById(R.id.breedChipGroup)).addView(chip);
-        }
-        for (CatCategory category : categories) {
-            Chip chip = new Chip(this);
-            chip.setText(category.getName());
-            chip.setTag(category);
-            chip.setCheckable(true);
-            ((ChipGroup) v.findViewById(R.id.categoryChipGroup)).addView(chip);
-        }
-    }
-
+    /**
+     * Given a {@link ChipGroup} will return the children that have been selected.
+     *
+     * @param cg ChipGroup that contains {@link CatBreed} tag.
+     *           Note: Given more time would add type safety checks as well
+     *           as a generic way to get the class tag you're searching for.
+     * @returnn list of breeds that have been selected
+     */
     private List<CatBreed> getCheckedBreeds(ChipGroup cg) {
         List<CatBreed> breeds = new ArrayList<>();
         for (int i = 0; i < cg.getChildCount(); i++) {
@@ -125,6 +121,14 @@ public class MainActivity extends AppCompatActivity {
         return breeds;
     }
 
+    /**
+     * Given a {@link ChipGroup} will return the children that have been selected.
+     *
+     * @param cg ChipGroup that contains {@link CatCategory} tag.
+     *           Note: Given more time would add type safety checks as well
+     *           as a generic way to get the class tag you're searching for.
+     * @returnn list of categories that have been selected
+     */
     private List<CatCategory> getCheckedCategories(ChipGroup cg) {
         List<CatCategory> categories = new ArrayList<>();
         for (int i = 0; i < cg.getChildCount(); i++) {
@@ -139,6 +143,11 @@ public class MainActivity extends AppCompatActivity {
         return categories;
     }
 
+    /**
+     * Returns the search view and inflates it if it has not yet been created.
+     *
+     * @return View containing the search options.
+     */
     private View getSearchView() {
         if (searchView == null) {
             searchView = LayoutInflater.from(this).inflate(R.layout.search_layout, null);

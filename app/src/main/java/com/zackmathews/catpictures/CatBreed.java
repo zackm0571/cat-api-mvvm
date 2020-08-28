@@ -2,8 +2,15 @@ package com.zackmathews.catpictures;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 
+/**
+ * Model for thecatapi breed object.
+ * Use with {@link CatRepo#getCatImagesFromSearchFilters(int, List, List)}
+ * to filter results by breed.
+ */
 public class CatBreed {
     private String id;
     private String name;
