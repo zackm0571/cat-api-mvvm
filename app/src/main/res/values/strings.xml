@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">CatPictures</string>
     <string name="cat_image">Cat Image</string>
+    <string name="search">Search</string>
+    <string name="breed">Breed</string>
+    <string name="category">Category</string>
 </resources>
