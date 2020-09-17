@@ -1,12 +1,12 @@
 ## README
 
-###Compile instructions
+### Compile instructions
 - Set API key in ${project root}/catapi.properties.
 
-####Summary
+### Summary
 This project uses thecatapi.com to display pictures of cats and the ability to search images by category or breed. 
 
-####Breakdown
+### Breakdown
 - MVVM
 - Retrofit
 - LiveData
